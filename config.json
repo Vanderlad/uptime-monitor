@@ -1,0 +1,11 @@
+{
+    "timeout_seconds": 5,
+    "retries": 1,
+    "ok_status_min": 200,
+    "ok_status_max": 399,
+    "urls": [
+        "https://example.com",
+        "https://another-example.com/api/health"
+    ],
+    "discord_webhook_url": "https://discord.com/api/webhooks/1453438452648382689/eUiYcLWuI7FagG7vsh2KPB4TBJvshj7JfIk45MaHlsHAR1n95OxFH41c6bdh6yKhduvc"
+}
