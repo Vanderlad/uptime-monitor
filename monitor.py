@@ -89,7 +89,29 @@ def check_url(url, timeout_seconds, retries):
     result["latency_ms_total"] = (end_total - start_total) * 1000 #convert to milliseconds
 
     return result
-    
+
+def send_discord_alert(webhook_url, content):
+    # Send alert to discord server
+    payload = {"content": content}
+
+    # Sends HTTP POST request
+    try:
+        response = requests.post(
+            webhook_url,
+            json=payload, #Convert dictionary to JSON text
+            timeout=5 #wait 5 seconds for Discord to respond
+        )
+        if not (200 <= response.status_code <= 299):
+            print(f"WARNING: Discord webhook rejected alert (status={response.status_code})")
+            return False
+        else:
+            print(f"Success\nStatus Code: {response.status_code}")
+            return True
+    except requests.RequestException as e:
+            print(f"Warning: Failed to send Discord alert\n{type(e).__name__}: {e}")
+
+    return False
+
 def main():
     website_down = False
     config = load_config()
@@ -108,9 +130,15 @@ def main():
                 print("Final landing page: " + result["final_url"])
         else:
             print("Website is down")
-            print(f"final status: {result['final_status']}")
+            if result["final_status"] == None:
+                print("Final status: N/A")
+            else:
+                print(f"Final status: {result['final_status']}")
             print(result["error"])
             website_down = True
+
+            content = f'DOWN: {url}\nstatus: {result["final_status"]}\nerror: {result["error"]}\ntotal_ms: {result["latency_ms_total"]}'
+            send_discord_alert(config["discord_webhook_url"], content)
         print("\n")
 
     if website_down:
