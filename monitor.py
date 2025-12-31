@@ -1,23 +1,8 @@
-#Project Structure
-
-#   uptime-monitor/
-#   ├── monitor.py # Main monitoring script
-#   ├── config.json # Configuration file (URLs, thresholds, webhook)
-#   ├── requirements.txt # Python dependencies
-#   ├── logs/
-#   │ ├── uptime.log # All check results
-#   │ └── alerts.log # Failure and alert-related events
-#   └── README.md
-
-''' 
-Questions I have while building
-   - Brought up by my friend: how do I get around constant pinging ip ban?
-'''
-
 # monitor.py
 import json # to parse json files
 import time
 import requests
+import os
 
 def load_config():
 # Function to load config so I can reuse it without being a global var
@@ -44,7 +29,8 @@ def check_url(url, timeout_seconds, retries):
 
     for attempt in range(retries + 1):
         start_attempt = time.perf_counter()
-
+        current_time_string = time.ctime()
+        print("Current Time:", current_time_string)
         try:
             headers = {"User-Agent": "uptime-monitor/1.0 (ProjectV)"} # User-Agent to avoid false downs
             response = requests.get(
