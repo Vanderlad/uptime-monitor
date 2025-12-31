@@ -3,6 +3,7 @@
     "retries": 2,
     "ok_status_min": 200,
     "ok_status_max": 399,
+    "check_interval_seconds": 120,
     "urls": [
         "https://www.tintsandtonesinc.com/",
         "https://example.com",
