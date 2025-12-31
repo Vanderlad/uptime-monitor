@@ -46,13 +46,18 @@ def check_url(url, timeout_seconds, retries):
         start_attempt = time.perf_counter()
 
         try:
+            headers = {"User-Agent": "uptime-monitor/1.0 (ProjectV)"} # User-Agent to avoid false downs
             response = requests.get(
                 url,
-                timeout=timeout_seconds,
+                headers=headers,
+                timeout=timeout_seconds, # example=example_test is parameter binding i.e. keyword binding 
                 allow_redirects=True
             )
-            end_attempt = time. perf_counter()
+            end_attempt = time.perf_counter()
+
             result["latency_ms_last_attempt"] = (end_attempt - start_attempt) * 1000
+
+            result["final_status"] = response.status_code
             result["final_url"] = response.url
 
             result["redirect_count"] = len(response.history)
@@ -61,7 +66,7 @@ def check_url(url, timeout_seconds, retries):
             # Stores list of urls redirected to up until success
             result["redirect_chain"] = [r.url for r in response.history] # list of r.url for each r in response.history
 
-            # Website is Up logic: treating 200-399 as up which includes redirects
+            # Website is Up logic: treating 200-399 as up
             result["up"] = 200 <= response.status_code <= 399
 
             # Success indicates no error
@@ -74,7 +79,7 @@ def check_url(url, timeout_seconds, retries):
             result["latency_ms_last_attempt"] = (end_attempt - start_attempt) * 1000
 
             # Specific exception message
-            result["error"] = f"{type(e),__name__}: {e}" # type(e),__name__ // what class was this object created from? and whats it's name?
+            result["error"] = f"{type(e).__name__}: {e}" # type(e),__name__ // what class was this object created from? and whats it's name?
                                                          #f"{e}" calls str(e) giving me the error's message" i.e., why did it fail?
 
             # Try again if not last attempt, otherwise loop ends and "Up" stays false
@@ -85,4 +90,34 @@ def check_url(url, timeout_seconds, retries):
 
     return result
     
+def main():
+    website_down = False
+    config = load_config()
+ 
+    for url in config["urls"]:
+        result = check_url(url, config["timeout_seconds"], config["retries"])
+        print("Checked url:" + url)
+        if result["up"]:
+            print("Website is up and running")
+            print(f"Total Latency in milliseconds: {result["latency_ms_total"]}")
+            print(f"Final Status Code: {result["final_status"]}")
+            if result["redirected"]:
+                print(f"Website was redirected {result['redirect_count']} times:")
+                for each in result["redirect_chain"]:
+                    print("\t" + each + "\n")
+                print("Final landing page: " + result["final_url"])
+        else:
+            print("Website is down")
+            print(f"final status: {result['final_status']}")
+            print(result["error"])
+            website_down = True
+        print("\n")
+
+    if website_down:
+        return 1
+        
+    return 0
+
+if __name__ == "__main__":
+    raise SystemExit(main())
     

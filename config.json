@@ -1,11 +1,18 @@
 {
     "timeout_seconds": 5,
-    "retries": 1,
+    "retries": 2,
     "ok_status_min": 200,
     "ok_status_max": 399,
     "urls": [
+        "https://www.tintsandtonesinc.com/",
         "https://example.com",
-        "https://another-example.com/api/health"
+        "https://doesnotexist-abcdefg12345.com",
+        "https://student.uwindsor.ca/?_gl=1*15mb6pc*_gcl_au*MTE3MTA4OTY4NC4xNzYxMjQ2OTM0*_ga*MTAwMTMyMTA5Ni4xNzYxMjQ2OTM0*_ga_TMHVD0679R*czE3NjcxMjkxODgkbzckZzAkdDE3NjcxMjkxODgkajYwJGwwJGgw",
+        "https://www.facebook.com/",
+        "https://www.instagram.com/",
+        "https://www.linkedin.com/"
     ],
     "discord_webhook_url": "https://discord.com/api/webhooks/1453438452648382689/eUiYcLWuI7FagG7vsh2KPB4TBJvshj7JfIk45MaHlsHAR1n95OxFH41c6bdh6yKhduvc"
 }
+
+
